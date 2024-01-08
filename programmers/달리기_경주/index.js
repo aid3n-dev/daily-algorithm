@@ -8,14 +8,14 @@ function solution(players, callings) {
 
   callings.forEach((calling) => {
     const calledIndex = runnerPosition.get(calling);
-    const runner = result[calledIndex - 1];
+    const frontRunner = result[calledIndex - 1];
 
     [result[calledIndex], result[calledIndex - 1]] = [
       result[calledIndex - 1],
       result[calledIndex],
     ];
 
-    runnerPosition.set(runner, calledIndex);
+    runnerPosition.set(frontRunner, calledIndex);
     runnerPosition.set(calling, calledIndex - 1);
   });
 
