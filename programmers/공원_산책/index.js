@@ -1,53 +1,55 @@
 function solution(park, routes) {
-  let parkPositionIndex = park.reduce((accumulator, parkRow, index) => {
-    if (parkRow.includes("S")) {
-      return index;
-    }
-
-    return accumulator;
-  }, 0);
-  const result = [];
+  const H = park.length;
+  const W = park[0].length;
+  let [positionX, positionY] = park.reduce(
+    (position, row, rowIndex) => {
+      const colIndex = row.indexOf("S");
+      return colIndex !== -1 ? [rowIndex, colIndex] : position;
+    },
+    [0, 0]
+  );
 
   routes.forEach((route) => {
-    const trimmedRoute = route.split(" ").join("");
-    const direction = trimmedRoute[0];
-    const stepCount = Number(trimmedRoute[1]);
-    const startPosition = park[parkPositionIndex].indexOf("S");
-    const parkRowLength = park[parkPositionIndex].length;
+    const [direction, steps] = route.split(" ");
+    const numberSteps = Number(steps);
+    const startPositionX = positionX;
+    const startPositionY = positionY;
 
-    switch (direction) {
-      case "E":
-        if (parkRowLength > stepCount) {
-          result[1] = stepCount;
-        }
+    let dx = 0;
+    let dy = 0;
 
-        break;
-      case "W":
-        if (result[1] >= stepCount) {
-          result[1] -= stepCount;
-        }
+    if (direction === "N") dx = -1;
+    if (direction === "S") dx = 1;
+    if (direction === "W") dy = -1;
+    if (direction === "E") dy = 1;
+    let isEscape = false;
 
-        break;
-      case "S":
-        const totalParkPosition = parkPositionIndex + stepCount;
-        if (totalParkPosition < parkRowLength) {
-          result[0] = stepCount;
-          parkPositionIndex += stepCount;
-        }
+    for (let i = 0; i < numberSteps; i++) {
+      if (
+        positionY + dy >= W ||
+        positionY + dy < 0 ||
+        positionX + dx >= H ||
+        positionX + dx < 0 ||
+        park[positionX + dx][positionY + dy] === "X"
+      ) {
+        isEscape = true;
 
         break;
-      case "N":
-        if (parkPositionIndex - stepCount > 0) {
-          result[0] -= stepCount;
-          parkPositionIndex -= stepCount;
-        }
+      }
+
+      positionX += dx;
+      positionY += dy;
+    }
+
+    if (isEscape) {
+      positionX = startPositionX;
+      positionY = startPositionY;
     }
   });
 
-  console.log(result);
-
-  return result;
+  return [positionX, positionY];
 }
 
-// solution(["SOO", "OOO", "OOO"], ["E 2", "S 2", "W 1"]);
-solution(["SOO", "OXX", "OOO"], ["E 2", "S 2", "W 1"]);
+// console.log(solution(["SOO", "OOO", "OOO"], ["E 2", "S 2", "W 1"]));
+// console.log(solution(["SOO", "OXX", "OOO"], ["E 2", "S 2", "W 1"]));
+console.log(solution(["OSO", "OOO", "OXO", "OOO"], ["E 2", "S 3", "W 1"]));
