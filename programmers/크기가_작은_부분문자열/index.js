@@ -12,7 +12,7 @@ function solution(t, p) {
     }
   }
 
-  console.log(result);
+  return result;
 }
 
 solution("3141592", "271");
